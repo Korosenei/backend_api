@@ -1,16 +1,27 @@
+databases:
+  - name: formis-db
+    plan: free
+
 services:
   - type: web
-    name: django-api
+    name: formis-api
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn formis_api.wsgi:application
+    plan: free
+    buildCommand: >
+      pip install -r requirements.txt &&
+      python manage.py collectstatic --noinput &&
+      python manage.py migrate
+    startCommand: gunicorn formis_api.wsgi
     envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: formis_api.settings
       - key: SECRET_KEY
         generateValue: true
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: formis-api.onrender.com
       - key: DATABASE_URL
         fromDatabase:
-          name: ma-db
+          name: formis-db
           property: connectionString
-databases:
-  - name: ma-db
-    plan: free
