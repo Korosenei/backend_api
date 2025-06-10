@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: django-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn formis_api.wsgi:application
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ma-db
+          property: connectionString
+databases:
+  - name: ma-db
+    plan: free
