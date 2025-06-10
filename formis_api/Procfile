@@ -1,1 +1,1 @@
-web: gunicorn formis_api.wsgi
+gunicorn formis_api.formis_api.wsgi
